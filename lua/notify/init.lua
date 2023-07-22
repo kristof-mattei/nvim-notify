@@ -22,7 +22,7 @@ function notify.setup(user_config)
   if has_telescope then
     require("telescope").load_extension("notify")
   end
-  vim.cmd([[command! Notifications :lua require("notify")._print_history()<CR>]])
+  vim.cmd([[command! Notifications :lua require("notify")._print_history(user_config)<CR>]])
 end
 
 function notify._config()
@@ -153,13 +153,13 @@ function notify.pending()
   return global_instance.pending()
 end
 
-function notify._print_history()
+function notify._print_history(config)
   if not global_instance then
     notify.setup()
   end
   for _, notif in ipairs(global_instance.history()) do
     vim.api.nvim_echo({
-      { vim.fn.strftime("%FT%T", notif.time), "NotifyLogTime" },
+      { vim.fn.strftime(config.time_formats().notification_history, notif.time), "NotifyLogTime" },
       { " ", "MsgArea" },
       { notif.title[1], "NotifyLogTitle" },
       { #notif.title[1] > 0 and " " or "", "MsgArea" },
